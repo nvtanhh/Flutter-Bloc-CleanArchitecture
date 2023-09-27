@@ -8,13 +8,7 @@ import 'package:gql_dio_link/gql_dio_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared/shared.dart';
-
-import '../../../../mapper/base/base_error_response_mapper.dart';
-import '../../../../mapper/base/base_success_response_mapper.dart';
-import '../../exception_mapper/graphql_exception_mapper.dart';
-import '../../middleware/base_interceptor.dart';
-import '../base/api_client_default_settings.dart';
-import '../base/dio_builder.dart';
+import '../../../../../../data.dart';
 
 enum GraphQLMethod { query, mutate }
 
@@ -22,10 +16,10 @@ class GraphQLApiClient {
   GraphQLApiClient({
     this.baseUrl = '',
     this.interceptors = const [],
-    this.errorResponseMapperType = ResponseMapperConstants.defaultErrorResponseMapperType,
-    this.connectTimeoutInMs = ServerTimeoutConstants.connectTimeoutInMs,
-    this.sendTimeoutInMs = ServerTimeoutConstants.sendTimeoutInMs,
-    this.receiveTimeoutInMs = ServerTimeoutConstants.receiveTimeoutInMs,
+    this.errorResponseMapperType = ApiClientDefaultSetting.defaultErrorResponseMapperType,
+    this.connectTimeout = ServerTimeoutConstants.connectTimeout,
+    this.sendTimeout = ServerTimeoutConstants.sendTimeout,
+    this.receiveTimeout = ServerTimeoutConstants.receiveTimeout,
   }) : _graphQLClient = ValueNotifier<GraphQLClient>(
           GraphQLClient(
             cache: GraphQLCache(),
@@ -34,9 +28,9 @@ class GraphQLApiClient {
               client: DioBuilder.createDio(
                 options: BaseOptions(
                   baseUrl: baseUrl,
-                  connectTimeout: connectTimeoutInMs,
-                  sendTimeout: sendTimeoutInMs,
-                  receiveTimeout: receiveTimeoutInMs,
+                  connectTimeout: connectTimeout,
+                  sendTimeout: sendTimeout,
+                  receiveTimeout: receiveTimeout,
                 ),
               ),
             ),
@@ -54,9 +48,9 @@ class GraphQLApiClient {
 
   final ErrorResponseMapperType errorResponseMapperType;
   final String baseUrl;
-  final int? connectTimeoutInMs;
-  final int? sendTimeoutInMs;
-  final int? receiveTimeoutInMs;
+  final Duration? connectTimeout;
+  final Duration? sendTimeout;
+  final Duration? receiveTimeout;
   final List<Interceptor> interceptors;
   final ValueNotifier<GraphQLClient> _graphQLClient;
 
@@ -86,7 +80,7 @@ class GraphQLApiClient {
     }
 
     return BaseSuccessResponseMapper<T, T>.fromType(SuccessResponseMapperType.jsonObject)
-        .map(response.data, decoder);
+        .map(response: response.data, decoder: decoder);
   }
 
   Future<QueryResult> _requestByMethod({

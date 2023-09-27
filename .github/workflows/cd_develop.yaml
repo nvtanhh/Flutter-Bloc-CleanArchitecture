@@ -6,8 +6,8 @@ on:
 
 env:
   JAVA_VERSION: "12.x"
-  FLUTTER_VERSION: "3.7.1"
-  MELOS_VERSION: "2.8.0"
+  FLUTTER_VERSION: "3.13.1"
+  MELOS_VERSION: "3.1.0"
   TESTER_GROUPS: "testers"
 
   # Android
@@ -88,8 +88,8 @@ jobs:
       - name: Install melos
         run: dart pub global activate melos ${{env.MELOS_VERSION}}
 
-      - name: Run build_runner
-        run: make force_build_all
+      - name: Run pub get and gen files
+        run: make sync
 
       - name: pub get app
         run: cd app && flutter pub get
@@ -142,8 +142,8 @@ jobs:
       - name: Install melos
         run: dart pub global activate melos ${{env.MELOS_VERSION}}
 
-      - name: Run build_runner
-        run: make force_build_all
+      - name: Run pub get and gen files
+        run: make sync
 
       - name: Build APK
         run: make build_dev_apk

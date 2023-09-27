@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_hard_coded_colors
 import 'package:flutter/material.dart';
 
 import '../../app.dart';
@@ -5,8 +6,8 @@ import '../../app.dart';
 class CircleShimmer extends StatelessWidget {
   const CircleShimmer({
     this.diameter,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final double? diameter;
 

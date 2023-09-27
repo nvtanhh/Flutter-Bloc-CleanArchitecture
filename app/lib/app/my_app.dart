@@ -11,7 +11,7 @@ import 'package:shared/shared.dart';
 import '../app.dart';
 
 class MyApp extends StatefulWidget {
-  const MyApp({required this.initialResource, Key? key}) : super(key: key);
+  const MyApp({required this.initialResource, super.key});
 
   final LoadInitialResourceOutput initialResource;
 
@@ -41,7 +41,6 @@ class _MyAppState extends BasePageState<MyApp, AppBloc> {
             previous.languageCode != current.languageCode,
         builder: (context, state) {
           return MaterialApp.router(
-            useInheritedMediaQuery: true,
             builder: (context, child) {
               final MediaQueryData data = MediaQuery.of(context);
 
@@ -51,7 +50,9 @@ class _MyAppState extends BasePageState<MyApp, AppBloc> {
               );
             },
             routerDelegate: _appRouter.delegate(
-              initialRoutes: _mapRouteToPageRouteInfo(widget.initialResource),
+              deepLinkBuilder: (deepLink) {
+                return DeepLink(_mapRouteToPageRouteInfo());
+              },
               navigatorObservers: () => [AppNavigatorObserver()],
             ),
             routeInformationParser: _appRouter.defaultRouteParser(),
@@ -79,8 +80,8 @@ class _MyAppState extends BasePageState<MyApp, AppBloc> {
     );
   }
 
-  List<PageRouteInfo> _mapRouteToPageRouteInfo(LoadInitialResourceOutput initialResource) {
-    return initialResource.initialRoutes.map((e) {
+  List<PageRouteInfo> _mapRouteToPageRouteInfo() {
+    return widget.initialResource.initialRoutes.map<PageRouteInfo>((e) {
       switch (e) {
         case AppRoute.login:
           return const LoginRoute();

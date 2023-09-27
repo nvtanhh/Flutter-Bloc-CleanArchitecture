@@ -1,14 +1,17 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared/shared.dart';
 
 import '../../app.dart';
+import 'bloc/home.dart';
 
+@RoutePage()
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -110,9 +113,7 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
 }
 
 class _LoadingItem extends StatelessWidget {
-  const _LoadingItem({
-    Key? key,
-  }) : super(key: key);
+  const _LoadingItem();
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +126,7 @@ class _LoadingItem extends StatelessWidget {
 
 /// Because [PagedListView] does not expose the [itemCount] property, itemCount = 0 on the first load and thus the Shimmer loading effect can not work. We need to create a fake ListView for the first load.
 class _ListViewLoader extends StatelessWidget {
-  const _ListViewLoader({
-    Key? key,
-  }) : super(key: key);
+  const _ListViewLoader();
 
   @override
   Widget build(BuildContext context) {

@@ -3,9 +3,11 @@ import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 
 import '../../app.dart';
+import 'bloc/main.dart';
 
+@RoutePage()
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({super.key});
 
   @override
   State<StatefulWidget> createState() {

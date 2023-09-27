@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../app.dart';
+import 'login.dart';
 
 @Injectable()
 class LoginBloc extends BaseBloc<LoginEvent, LoginState> {
-  LoginBloc(this._loginUseCase) : super(const LoginState()) {
+  LoginBloc(this._loginUseCase, this._fakeLoginUseCase) : super(const LoginState()) {
     on<EmailTextFieldChanged>(
       _onEmailTextFieldChanged,
       transformer: distinct(),
@@ -28,9 +29,15 @@ class LoginBloc extends BaseBloc<LoginEvent, LoginState> {
       _onEyeIconPressed,
       transformer: log(),
     );
+
+    on<FakeLoginButtonPressed>(
+      _onFakeLoginButtonPressed,
+      transformer: log(),
+    );
   }
 
   final LoginUseCase _loginUseCase;
+  final FakeLoginUseCase _fakeLoginUseCase;
 
   bool _isLoginButtonEnabled(String email, String password) {
     return email.isNotEmpty && password.isNotEmpty;
@@ -61,6 +68,17 @@ class LoginBloc extends BaseBloc<LoginEvent, LoginState> {
       handleError: false,
       doOnError: (e) async {
         emit(state.copyWith(onPageError: exceptionMessageMapper.map(e)));
+      },
+    );
+  }
+
+  FutureOr<void> _onFakeLoginButtonPressed(
+    FakeLoginButtonPressed event,
+    Emitter<LoginState> emit,
+  ) async {
+    return runBlocCatching(
+      action: () async {
+        await _fakeLoginUseCase.execute(const FakeLoginInput());
       },
     );
   }

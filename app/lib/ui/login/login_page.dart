@@ -1,11 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resources/resources.dart';
 
 import '../../app.dart';
+import 'bloc/login.dart';
 
+@RoutePage()
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -19,7 +22,7 @@ class _LoginPageState extends BasePageState<LoginPage, LoginBloc> {
     return CommonScaffold(
       hideKeyboardWhenTouchOutside: true,
       appBar: CommonAppBar(
-        leadingIcon: LeadingIcon.close,
+        leadingIcon: navigator.canPopSelfOrChildren ? LeadingIcon.close : LeadingIcon.none,
         leadingIconColor: AppColors.current.secondaryColor,
         titleType: AppBarTitle.text,
         centerTitle: true,
@@ -71,6 +74,17 @@ class _LoginPageState extends BasePageState<LoginPage, LoginBloc> {
                     ),
                   );
                 },
+              ),
+              SizedBox(height: Dimens.d15.responsive()),
+              ElevatedButton(
+                onPressed: () => bloc.add(const FakeLoginButtonPressed()),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(AppColors.current.primaryColor),
+                ),
+                child: Text(
+                  S.current.fakeLogin,
+                  style: AppTextStyles.s14w400Primary(),
+                ),
               ),
             ],
           ),

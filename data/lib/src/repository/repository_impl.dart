@@ -1,7 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dartx/dartx.dart';
 import 'package:domain/domain.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared/shared.dart';
 
 import '../../data.dart';
 
@@ -22,7 +22,7 @@ class RepositoryImpl implements Repository {
   final AppPreferences _appPreferences;
   final AppDatabase _appDatabase;
   final PreferenceUserDataMapper _preferenceUserDataMapper;
-  final UserDataMapper _userDataMapper;
+  final ApiUserDataMapper _userDataMapper;
   final LanguageCodeDataMapper _languageCodeDataMapper;
   final GenderDataMapper _genderDataMapper;
   final LocalUserDataMapper _localUserDataMapper;
@@ -58,14 +58,24 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> login(String email, String password) async {
-    final response = await _appApiService.login(email, password);
-    await _saveTokenAndUser(response.data);
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
+    final response = await _appApiService.login(email: email, password: password);
+    await Future.wait([
+      saveAccessToken(response?.data?.accessToken ?? ''),
+      saveUserPreference(
+        User(
+          id: safeCast(response?.data?.id) ?? -1,
+          email: safeCast(response?.data?.email) ?? '',
+        ),
+      ),
+    ]);
   }
 
   @override
   Future<void> logout() async {
-    await _appApiService.logout();
     await _appPreferences.clearCurrentUserData();
   }
 
@@ -98,7 +108,15 @@ class RepositoryImpl implements Repository {
       password: password,
       gender: _genderDataMapper.mapToData(gender),
     );
-    await _saveTokenAndUser(response.data);
+    await Future.wait([
+      saveAccessToken(response?.data?.accessToken ?? ''),
+      saveUserPreference(
+        User(
+          id: safeCast(response?.data?.id) ?? -1,
+          email: safeCast(response?.data?.email) ?? '',
+        ),
+      ),
+    ]);
   }
 
   @override
@@ -108,16 +126,13 @@ class RepositoryImpl implements Repository {
   Future<void> clearCurrentUserData() => _appPreferences.clearCurrentUserData();
 
   @override
-  Future<bool> saveDeviceToken(String deviceToken) => _appPreferences.saveDeviceToken(deviceToken);
-
-  @override
   Future<PagedList<User>> getUsers({
     required int page,
     required int? limit,
   }) async {
     final response = await _appApiService.getUsers(page: page, limit: limit);
 
-    return PagedList(data: _userDataMapper.mapToListEntity(response.results));
+    return PagedList(data: _userDataMapper.mapToListEntity(response?.results));
   }
 
   @override
@@ -132,7 +147,7 @@ class RepositoryImpl implements Repository {
   Future<User> getMe() async {
     final response = await _appApiService.getMe();
 
-    return _userDataMapper.mapToEntity(response.data);
+    return _userDataMapper.mapToEntity(response);
   }
 
   @override
@@ -169,14 +184,10 @@ class RepositoryImpl implements Repository {
     return _appDatabase.putUser(userData);
   }
 
-  Future<List<Object>> _saveTokenAndUser(AuthResponseData? authData) async {
-    return Future.wait([
-      _appPreferences.saveCurrentUser(PreferenceUserData(
-        id: authData?.id ?? -1,
-        email: authData?.email ?? '',
-      )),
-      if (authData != null && !authData.accessToken.isNullOrEmpty)
-        _appPreferences.saveAccessToken(authData.accessToken!),
-    ]);
-  }
+  @override
+  Future<void> saveAccessToken(String accessToken) => _appPreferences.saveAccessToken(accessToken);
+
+  @override
+  Future<bool> saveUserPreference(User user) =>
+      _appPreferences.saveCurrentUser(_preferenceUserDataMapper.mapToData(user));
 }

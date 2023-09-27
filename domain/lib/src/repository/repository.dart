@@ -13,7 +13,10 @@ abstract class Repository {
 
   Stream<bool> get onConnectivityChanged;
 
-  Future<void> login(String email, String password);
+  Future<void> login({
+    required String email,
+    required String password,
+  });
 
   Future<void> logout();
 
@@ -37,8 +40,6 @@ abstract class Repository {
 
   Future<void> clearCurrentUserData();
 
-  Future<bool> saveDeviceToken(String deviceToken);
-
   Future<bool> saveIsFirstLogin(bool isFirstLogin);
 
   Future<bool> saveIsFirstLaunchApp(bool isFirstLaunchApp);
@@ -51,6 +52,10 @@ abstract class Repository {
   Future<bool> saveIsDarkMode(bool isDarkMode);
 
   Future<bool> saveLanguageCode(LanguageCode languageCode);
+
+  Future<void> saveAccessToken(String accessToken);
+
+  Future<bool> saveUserPreference(User user);
 
   Future<User> getMe();
 

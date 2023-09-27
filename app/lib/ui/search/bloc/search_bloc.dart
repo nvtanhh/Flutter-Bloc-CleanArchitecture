@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../app.dart';
+import 'search.dart';
 
 @Injectable()
 class SearchBloc extends BaseBloc<SearchEvent, SearchState> {
@@ -14,8 +15,5 @@ class SearchBloc extends BaseBloc<SearchEvent, SearchState> {
     );
   }
 
-  FutureOr<void> _onSearchPageInitiated(SearchPageInitiated event, Emitter<SearchState> emit) {
-    // Xin hãy ghi nhớ đặt tên Event theo convention:
-    // <Tên Widget><Verb ở dạng Quá khứ>. VD: LoginButtonPressed, EmailTextFieldChanged, HomePageRefreshed
-  }
+  FutureOr<void> _onSearchPageInitiated(SearchPageInitiated event, Emitter<SearchState> emit) {}
 }

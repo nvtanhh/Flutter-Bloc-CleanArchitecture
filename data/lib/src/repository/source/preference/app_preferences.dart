@@ -65,22 +65,18 @@ class AppPreferences with LogMixin {
     return _sharedPreference.setBool(SharedPreferenceKeys.isFirstLaunchApp, isFirstLaunchApp);
   }
 
-  Future<bool> saveAccessToken(String token) async {
-    final success = await _encryptedSharedPreferences.setString(
+  Future<void> saveAccessToken(String token) async {
+    await _encryptedSharedPreferences.setString(
       SharedPreferenceKeys.accessToken,
       token,
     );
-
-    return success;
   }
 
-  Future<bool> saveRefreshToken(String token) async {
-    final success = await _encryptedSharedPreferences.setString(
+  Future<void> saveRefreshToken(String token) async {
+    await _encryptedSharedPreferences.setString(
       SharedPreferenceKeys.refreshToken,
       token,
     );
-
-    return success;
   }
 
   Future<bool> saveCurrentUser(PreferenceUserData preferenceUserData) {

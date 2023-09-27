@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_hard_coded_colors
 import 'package:flutter/material.dart';
 
 import '../../app.dart';
@@ -6,8 +7,8 @@ class RounedRectangleShimmer extends StatelessWidget {
   const RounedRectangleShimmer({
     this.width,
     this.height,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final double? width;
   final double? height;

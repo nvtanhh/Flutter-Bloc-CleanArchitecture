@@ -1,3 +1,4 @@
+// ignore_for_file: missing_run_bloc_catching
 import 'package:app/app.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:domain/domain.dart';
@@ -10,6 +11,8 @@ class MockAppNavigator extends Mock implements AppNavigator {}
 
 class MockLoginUseCase extends Mock implements LoginUseCase {}
 
+class MockFakeLoginUseCase extends Mock implements FakeLoginUseCase {}
+
 class MockCommonBloc extends Mock implements CommonBloc {}
 
 class MockExceptionMessageMapper extends Mock implements ExceptionMessageMapper {}
@@ -18,12 +21,13 @@ void main() {
   group('LoginBloc', () {
     late LoginBloc bloc;
     final _loginUseCase = MockLoginUseCase();
+    final _fakeLoginUseCase = MockFakeLoginUseCase();
     final _navigator = MockAppNavigator();
     final _commonBloc = MockCommonBloc();
     final _exceptionMessageMapper = MockExceptionMessageMapper();
 
     setUp(() {
-      bloc = LoginBloc(_loginUseCase);
+      bloc = LoginBloc(_loginUseCase, _fakeLoginUseCase);
       bloc.navigator = _navigator;
       bloc.commonBloc = _commonBloc;
       bloc.exceptionMessageMapper = _exceptionMessageMapper;
